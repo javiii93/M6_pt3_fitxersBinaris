@@ -1,8 +1,6 @@
 package pt3_m6;
 
 
-import java.util.Scanner;
-
 public class Becario {
 public String nomCognom,sexo;
 public int edad, numeroSuspensos;
