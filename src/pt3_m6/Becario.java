@@ -2,7 +2,8 @@ package pt3_m6;
 
 
 public class Becario {
-public String nomCognom,sexo;
+public String nomCognom;
+public char sexo;
 public int edad, numeroSuspensos;
 public String residenciaFamiliar;
 public float ingresosAnualesFamiliares;
@@ -11,7 +12,7 @@ public float ingresosAnualesFamiliares;
 
 
 	
-public Becario(String nomCognom, String sexo, int edad, int numeroSuspensos, String residenciaFamiliar,
+public Becario(String nomCognom, char sexo, int edad, int numeroSuspensos, String residenciaFamiliar,
 		float ingresosAnualesFamiliares) {
 	super();
 	this.nomCognom = nomCognom;
@@ -38,7 +39,7 @@ public void setNomCognom(String nomCognom) {
 
 
 
-public String getSexo() {
+public char getSexo() {
 	return sexo;
 }
 
@@ -46,7 +47,7 @@ public String getSexo() {
 
 
 
-public void setSexo(String sexo) {
+public void setSexo(char sexo) {
 	this.sexo = sexo;
 }
 
