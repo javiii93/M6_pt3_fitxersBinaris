@@ -7,49 +7,85 @@ import java.util.Scanner;
 
 public class MainClass {
 	static Scanner sc;
-	static String verificar = "";
+	static String verificar = "", nom, nom2;
 	static boolean salida1 = true;
+	static int opcion = 0, h = 1;
 
 	public static void main(String[] args) throws IOException {
-
 		sc = new Scanner(System.in);
-		Becario b1 = new Becario(introducirNombreApellidos(), introducirSexo(), introducirEdad(), introducirSuspensos(),
-				introducirResidencia(), introducirIngresos());
-		if (b1.toString().contains("null") || b1.toString().contains("-1") || b1.toString().contains("!")) {
-			String[] contenidos = b1.toString().split(",");
-			for (int i = 0; i < contenidos.length; i++) {
-				if (contenidos[i].contains("null") || contenidos[i].contains("-1")
-						|| contenidos[i].toString().contains("!")) {
-					if (i == 0) {
-						b1.setNomCognom(introducirNombreApellidos());
-					} else if (i == 1) {
-						b1.setSexo(introducirSexo());
-					} else if (i == 2) {
-						b1.setEdad(introducirEdad());
-					} else if (i == 3) {
-						b1.setNumeroSuspensos(introducirSuspensos());
-					} else if (i == 4) {
-						b1.setResidenciaFamiliar(introducirResidencia());
-					} else if (i == 5) {
-						b1.setIngresosAnualesFamiliares(introducirIngresos());
+		while (salida1) {
+			menu();
+			if (sc.hasNextInt()) {
+				opcion = sc.nextInt();
+				switch (opcion) {
+				case 1:
+					nom = "b" + h;
+					sc.nextLine();
+					Becario nom = new Becario(introducirNombreApellidos(), introducirSexo(), introducirEdad(),
+							introducirSuspensos(), introducirResidencia(), introducirIngresos());
+					while (nom.toString().contains("null") || nom.toString().contains("-1")
+							|| nom.toString().contains("!")) {
+						String[] contenidos = nom.toString().split(",");
+						for (int i = 0; i < contenidos.length; i++) {
+							if (contenidos[i].contains("null") || contenidos[i].contains("-1")
+									|| contenidos[i].toString().contains("!")) {
+								if (i == 0) {
+									nom.setNomCognom(introducirNombreApellidos());
+								} else if (i == 1) {
+									nom.setSexo(introducirSexo());
+								} else if (i == 2) {
+									nom.setEdad(introducirEdad());
+								} else if (i == 3) {
+									nom.setNumeroSuspensos(introducirSuspensos());
+								} else if (i == 4) {
+									nom.setResidenciaFamiliar(introducirResidencia());
+								} else if (i == 5) {
+									nom.setIngresosAnualesFamiliares(introducirIngresos());
+								}
+							}
+						}
 					}
+					nom2 = nom2 + h;
+					File nom2 = new File("becadades.dat");
+					RandomAccessFile raf = new RandomAccessFile(nom2, "rw");
+					System.out.println(raf.getFilePointer());
+					raf.writeChars(nom.nomCognom);
+					raf.writeChar(nom.sexo);
+					raf.writeInt(nom.edad);
+					raf.writeInt(nom.numeroSuspensos);
+					raf.writeChars(nom.residenciaFamiliar);
+					raf.writeFloat(nom.ingresosAnualesFamiliares);
+					raf.writeChar('?');
+					System.out.println(raf.length());
+					System.out.println(raf.getFilePointer());
+					raf.close();
+
+					break;
+				case 2:
+					break;
+				case 3:
+					salida1 = false;
+					System.out.println("Saliendo del programa");
+					break;
+				default:
+					System.out.println("Opcion no reconocida");
 				}
+			} else {
+				sc.next();
+				System.out.println("Opcion no reconocida, vuelva a introducirla");
 			}
-
-		} else {
-			File f = new File("becadades.dat");
-			RandomAccessFile raf = new RandomAccessFile(f, "rw");
-			raf.writeChars(b1.nomCognom);
-			raf.writeChar(b1.sexo);
-			raf.writeInt(b1.edad);
-			raf.writeInt(b1.numeroSuspensos);
-			raf.writeChars(b1.residenciaFamiliar);
-			raf.writeFloat(b1.ingresosAnualesFamiliares);
-			raf.writeChar('?');
-			raf.close();
-
+			h++;
 		}
+
 		sc.close();
+	}
+
+	static public void menu() {
+		System.out.println("Elige una opcion: ");
+		System.out.println("1.- Ingresar alumno");
+		System.out.println("2.- Listar archivo becadades.dat ");
+		System.out.println("3.- Salir ");
+		System.out.println("---------------------------------");
 	}
 
 	static public String introducirNombreApellidos() {
