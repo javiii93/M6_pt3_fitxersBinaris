@@ -1,29 +1,23 @@
 package pt3_m6;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Scanner;
 
 public class MainClass {
 	static Scanner sc;
-	static String verificar = "", nom, nom2="g";
+	static String verificar = "", nom, nom2 = "g";
 	static boolean salida1 = true;
 	static int opcion = 0, h = 1;
-	static long puntero,puntero1=0;
+	static long puntero, puntero1 = 0;
+	static File localizador = new File("localizador.txt");
 
 	public static void main(String[] args) throws IOException {
 		sc = new Scanner(System.in);
-		File localizador = new File("localizador.long");
-		if(localizador.exists()) {
-			RandomAccessFile raf23 = new RandomAccessFile(localizador, "rw");
-			puntero1=raf23.readLong();
-			puntero=raf23.readLong();
-			raf23.close();
-			
-		}
-		RandomAccessFile raf23 = new RandomAccessFile(localizador, "rw");
-		
+
 		while (salida1) {
 			menu();
 			if (sc.hasNextInt()) {
@@ -56,11 +50,13 @@ public class MainClass {
 							}
 						}
 					}
-					//nom2 = nom2 + h;
 					File nom2 = new File("becadades.dat");
 					RandomAccessFile raf = new RandomAccessFile(nom2, "rw");
+
+					if (saberUltimaPosicion(localizador) != 0 && saberUltimaPosicion(localizador) > puntero1) {
+						puntero1 = saberUltimaPosicion(localizador);
+					}
 					raf.seek(puntero1);
-					System.out.println(raf.getFilePointer());
 					raf.writeChars(nom.nomCognom);
 					raf.writeChar(',');
 					raf.writeChar(nom.sexo);
@@ -68,71 +64,81 @@ public class MainClass {
 					raf.writeInt(nom.numeroSuspensos);
 					raf.writeChars(nom.residenciaFamiliar);
 					raf.writeFloat(nom.ingresosAnualesFamiliares);
-					//raf.writeChar('?');
-					puntero1=raf.getFilePointer();
+					puntero1 = raf.getFilePointer();
 					raf.close();
 
 					break;
 				case 2:
-					boolean salida4=true;
-					File ab=new File("becadades.dat");
-					RandomAccessFile raf1=new RandomAccessFile(ab, "rw");
+					boolean salida4 = true;
+					File ab = new File("becadades.dat");
+					RandomAccessFile raf1 = new RandomAccessFile(ab, "rw");
 					raf1.seek(0);
 					char a;
-					String nombree="Nombre: ";
-					while(salida4) {
-						a=raf1.readChar();
-						if(','==a) {
-							a=raf1.readChar();
-							if(a=='H'||a=='h') {
-								nombree=nombree+", Sexo: Hombre";
-							}else {
-								nombree=nombree+",  Sexo: Mujer";
-							}nombree=nombree+", Edad: "+raf1.readInt();
-							nombree=nombree+", Numero de suspensos: "+raf1.readInt();
-							a=raf1.readChar();
-							if(a=='s'||a=='S') {
-								nombree=nombree+",Reside con su familia";
-								puntero=raf1.getFilePointer();
-								raf1.seek(puntero+2);
-								//a=raf1.readChar();
-							}else {
-								nombree=nombree+", No reside con su familia";
-								puntero=raf1.getFilePointer();
-								raf1.seek(puntero+2);
-								//a=raf1.readChar();
-							}nombree=nombree+",Ingresos familiares anuales: "+raf1.readFloat();
-							salida4=false;
-							a='\n';
-							puntero=raf1.getFilePointer();
-							/*a=raf1.readChar();
-							String prueba="";
-							prueba=prueba+a;
-							*/
-							if(puntero>=puntero1) {
-								System.out.println("\nEste es el ultimo alumno inscrito: \n");
-							}else {
-								raf1.seek(puntero);
-								salida4=true;
-								System.out.println(nombree);
-								nombree="Nombre: ";
+					String nombree = "Nombre: ";
+					while (salida4) {
+						a = raf1.readChar();
+						if (',' == a) {
+							a = raf1.readChar();
+							if (a == 'H' || a == 'h') {
+								nombree = nombree + ", Sexo: Hombre";
+							} else {
+								nombree = nombree + ",  Sexo: Mujer";
 							}
-							
-							//System.out.println(raf1.getFilePointer()+100);
-							
-							/*if(raf1.seek(puntero+10)=java.io.EOException=) {
-								
-							}*/
-						//salida4=false;
-						}nombree=nombree+a;
+							nombree = nombree + ", Edad: " + raf1.readInt();
+							nombree = nombree + ", Numero de suspensos: " + raf1.readInt();
+							a = raf1.readChar();
+							if (a == 's' || a == 'S') {
+								nombree = nombree + ",Reside con su familia";
+								puntero = raf1.getFilePointer();
+								raf1.seek(puntero + 2);
+
+							} else {
+								nombree = nombree + ", No reside con su familia";
+								puntero = raf1.getFilePointer();
+								raf1.seek(puntero + 2);
+
+							}
+							nombree = nombree + ",Ingresos familiares anuales: " + raf1.readFloat();
+							a = '\n';
+							puntero = raf1.getFilePointer();
+
+							if (puntero < saberUltimaPosicion(localizador)) {
+								raf1.seek(puntero);
+								salida4 = true;
+								System.out.println(nombree);
+								nombree = "Nombre:";
+								a = ' ';
+							} else if (puntero < puntero1) {
+								raf1.seek(puntero);
+								salida4 = true;
+								System.out.println(nombree);
+								nombree = "Nombre:";
+								a = ' ';
+							} else {
+
+								System.out.println(nombree);
+								salida4 = false;
+								a = ' ';
+							}
+
+							// System.out.println(raf1.getFilePointer()+100);
+
+							/*
+							 * if(raf1.seek(puntero+10)=java.io.EOException=) {
+							 * 
+							 * }
+							 */
+							// salida4=false;
+						}
+						nombree = nombree + a;
 					}
 					raf1.close();
-					System.out.println(nombree);
+					// System.out.println(nombree);
 					break;
 				case 3:
 					salida1 = false;
-					raf23.writeLong(puntero1);
-					raf23.close();
+					escribirUltimaPosicion();
+
 					System.out.println("Saliendo del programa");
 					break;
 				default:
@@ -146,6 +152,30 @@ public class MainClass {
 		}
 
 		sc.close();
+	}
+
+	static public int saberUltimaPosicion(File f) throws FileNotFoundException {
+		Scanner sc1 = new Scanner(f);
+		String n = sc1.next();
+		sc1.close();
+		if (n.equals("") || n == null) {
+			return 0;
+		} else {
+			return Integer.parseInt(n);
+		}
+
+	}
+
+	static public void escribirUltimaPosicion() throws IOException {
+		FileWriter fw = new FileWriter("localizador.txt");
+		if (puntero > puntero1) {
+			fw.write(String.valueOf(puntero));
+		} else {
+
+			fw.write(String.valueOf(puntero1));
+		}
+		fw.close();
+
 	}
 
 	static public void menu() {
